@@ -1,0 +1,81 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    transition: background-color 5s ease;
+}
+
+#titleDisplay {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 24px;
+}
+
+
+#timeDisplay {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 24px;
+}
+
+body.day {
+    background-color: white;
+    color: black;
+}
+
+body.night {
+    background-color: black;
+    color: white;
+}
+
+
+#apartmentDisplay {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: inherit;
+
+    z-index: 1;
+
+    pointer-events: none;
+    user-select: none;
+    line-height: 1.1;
+
+    font-family: monospace;
+    font-size: 16px;
+}
+
+.tommy-brown {
+    color: rgb(102, 79, 35);
+}
+
+.tommy-green {
+    color: rgb(51, 97, 21);
+}
