@@ -64,7 +64,8 @@ function updateTime(now){
 
     const minutes = now.getMinutes().toString().padStart(2, '0');
 
-    dateTimeDisplay.textContent = toAscii(`${weekdayStr} ${month}-${day}-${year} ${hours}:${minutes} ${AMPM}`);
+    const dateTime = [toAscii(`${weekdayStr} ${month}-${day}-${year}`), toAscii(`${hours}:${minutes} ${AMPM}`)];
+    dateTimeDisplay.textContent = dateTime.join("\n")
 }
 
 
