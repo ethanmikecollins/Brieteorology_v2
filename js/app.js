@@ -11,7 +11,7 @@ const sunriseSunset = [6, 23]
 function updateFrame(){
     const now = new Date();
 
-    titleDisplay.textContent = toAscii(`BRIETEOROLOGY!`);
+    titleDisplay.textContent = toAscii(`BRIETEOROLOGY`);
 
     updateTime(now);
     updateBackground(now, sunriseSunset);
@@ -29,7 +29,28 @@ requestAnimationFrame(updateFrame)
 
 
 function updateTime(now){
-    const timeDisplay = document.getElementById("timeDisplay");
+    const dateTimeDisplay = document.getElementById("dateTimeDisplay");
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    const weekday = now.getDay();
+
+    let weekdayStr = "SUN"
+    if (weekday == 1){
+        weekdayStr = "MON"
+    }else if (weekday == 2){
+        weekdayStr = "TUE"
+    }else if (weekday == 3){
+        weekdayStr = "WED"
+    }else if (weekday == 4){
+        weekdayStr = "THU"
+    }else if (weekday == 5){
+        weekdayStr = "FRI"
+    }else if (weekday == 6){
+        weekdayStr = "SAT"
+    }
+
+
     let hours = now.getHours();
     let AMPM = "AM"
     if (hours === 0) {
@@ -43,7 +64,7 @@ function updateTime(now){
 
     const minutes = now.getMinutes().toString().padStart(2, '0');
 
-    timeDisplay.textContent = toAscii(`${hours}:${minutes} ${AMPM}`);
+    dateTimeDisplay.textContent = toAscii(`${weekdayStr} ${month}-${day}-${year} ${hours}:${minutes} ${AMPM}`);
 }
 
 

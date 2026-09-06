@@ -9,7 +9,7 @@ html, body {
 
 #titleDisplay {
     position: fixed;
-    top: 24px;
+    top: 12px;
     left: 50%;
 
     transform: translateX(-50%);
@@ -26,9 +26,9 @@ html, body {
 }
 
 
-#timeDisplay {
+#dateTimeDisplay {
     position: fixed;
-    top: 24px;
+    top: 50px;
     left: 24px;
 
     color: inherit;
@@ -69,7 +69,7 @@ body.night {
     line-height: 1.1;
 
     font-family: monospace;
-    font-size: 16px;
+    font-size: 10px;
 }
 
 .tommy-brown {
