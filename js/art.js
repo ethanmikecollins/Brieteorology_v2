@@ -170,14 +170,18 @@ const TommyFrames = [String.raw
 `
 ]
 
-let currentTommy = 0
+let currentTommy = 0;
+let counter = 0;
 
 export function updateTommy(){
-    if (Math.floor(Math.random()*501) == 0){
-        currentTommy += 1
+    if (counter == 60){
+        counter = 0;
+        currentTommy += 1;
         if (currentTommy == TommyFrames.length){
-            currentTommy = 0
+            currentTommy = 0;
         }
+    }else{
+        counter += 1;
     }
 
     return TommyFrames[currentTommy]
