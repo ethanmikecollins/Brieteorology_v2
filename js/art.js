@@ -200,3 +200,86 @@ export function renderAscii(text) {
 
     return html;
 }
+
+export const moonFrames = [String.raw // Full moon
+`
+   _..._   
+ .:::::::. 
+:::::::::::
+:::::::::::
+':::::::::'
+  '':::''  
+`, String.raw // Waning gibbous
+`
+   _..._   
+ .::::. '. 
+:::::::.  :
+::::::::  :
+'::::::' .'
+  ''::'-'  
+`, String.raw // Last quarter
+`
+   _..._   
+ .::::  '. 
+::::::    :
+::::::    :
+':::::   .'
+  ''::.-'  
+`, String.raw // Waning crescent
+`
+   _..._   
+ .::'   '. 
+:::       :
+:::       :
+'::.     .'
+  '':..-'  
+`, String.raw // New moon
+`
+   _..._   
+ .'     '. 
+:         :
+:         :
+'.       .'
+  '-...-'  
+`, String.raw // Waxing crescent
+`
+   _..._   
+ .'   '::. 
+:       :::
+:       :::
+'.     .::'
+  '-..:''  
+`, String.raw // First quarter
+`
+   _..._   
+ .'  ::::. 
+:    ::::::
+:    ::::::
+'.   :::::'
+  '-.::''  
+`, String.raw // Waxing gibbous
+`
+   _..._   
+ .' .::::. 
+:  ::::::::
+:  ::::::::
+'. '::::::'
+  '-.::''  
+`
+]
+
+export const sun = String.raw
+`
+     .    |     .     
+      \   |    /      
+  '.   \  '   /   .'  
+    '. .-*""*-. .'    
+"*-._ /        \ _.-*"
+     :          ; ____
+""""':          ;     
+_.-*" \        / "*-._
+    .' '-.__.-' '.    
+  .'   /   .  \   '.  
+      /    |   \      
+     '     |    '     
+`;

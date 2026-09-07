@@ -1,4 +1,5 @@
 import requests
+import json
 
 latitude = 40.69225
 longitude = -73.91458
@@ -42,5 +43,5 @@ response = requests.get(url, params=params)
 response.raise_for_status()
 
 weather = response.json()
-
-print(weather["daily"]["temperature_2m_max"])
+with open("weather.json", "w") as file:
+    json.dump(weather, file)

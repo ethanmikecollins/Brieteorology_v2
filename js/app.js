@@ -4,28 +4,106 @@ import { updateTommy } from "./art.js";
 import { apartmentTop } from "./art.js";
 import { apartmentBot } from "./art.js";
 import { renderAscii } from "./art.js";
+import { moonFrames } from "./art.js";
+import { sun } from "./art.js";
 
 
-const sunriseSunset = [6, 23]
+let weather;
+let predictionMode = false;
+let predictionNow = null;
+let timeFrame = 0;
+let nextDay = 0;
+
+async function loadWeather() {
+    const response = await fetch("weather.json");
+    weather = await response.json();
+
+    requestAnimationFrame(updateFrame);
+    const now = new Date()
+    console.log(now.getDay())
+    console.log(weather.hourly.cloud_cover)
+    console.log(weather.daily.moon_phase)
+}
+
+loadWeather()
 
 function updateFrame(){
-    const now = new Date();
-
-    titleDisplay.textContent = toAscii(`BRIETEOROLOGY`);
-
+    let now;
+    if (predictionMode){
+        now = predictionNow;
+    }else{
+        now = new Date();
+    }
+    
     updateTime(now);
-    updateBackground(now, sunriseSunset);
+    updateBackground(now, weather);
     updateApartment(now);
     //updateApartment(now, windspeed, weather);
     //updateTrees(now, windspeed);
     //updateTommy(now)
     //updateWeather(now, weather, windspeed);
-    //updateSunMoon(now, phase);
+    updateSunMoon(now, weather);
 
     requestAnimationFrame(updateFrame);
 }
 
-requestAnimationFrame(updateFrame)
+function startPredictionMode(){
+    predictionMode = true;
+    predictionNow = new Date();
+
+    predictionNow.setMinutes(0);
+    predictionNow.setSeconds(0);
+    predictionNow.setMilliseconds(0);
+}
+
+function stopPredictionMode(){
+    predictionMode = false;
+    predictionNow = null;
+    timeFrame = 0;
+    nextDay = 0;
+}
+
+function advancePrediction(){
+    predictionNow.setHours(predictionNow.getHours() + 1);
+    if (predictionNow.getHours() == 0){
+        nextDay = 1;
+    }
+    console.log(nextDay);
+    console.log(new Date(weather.daily.sunrise[0 + nextDay]));
+}
+
+function reversePrediction(){
+    predictionNow.setHours(predictionNow.getHours() - 1);
+    if (predictionNow.getHours() == 23){
+        nextDay = 0;
+    }
+    console.log(nextDay);
+    console.log(new Date(weather.daily.sunrise[0 + nextDay]));
+}
+
+
+document.addEventListener("keydown", (event) => {
+
+    if (event.key === "p"){
+        if (predictionMode){
+            stopPredictionMode();
+        }else{
+            startPredictionMode();
+        }
+    }
+
+    if (predictionMode && event.key === "ArrowRight" && timeFrame < 24) {
+        advancePrediction();
+        timeFrame += 1;
+        console.log(timeFrame)
+    }
+
+    if (predictionMode && event.key === "ArrowLeft" && timeFrame > 0) {
+        reversePrediction();
+        timeFrame -= 1;
+        console.log(timeFrame)
+    }
+});
 
 
 function updateTime(now){
@@ -63,17 +141,22 @@ function updateTime(now){
     }
 
     const minutes = now.getMinutes().toString().padStart(2, '0');
+    let dateTime;
 
-    const dateTime = [toAscii(`${weekdayStr} ${month}-${day}-${year}`), toAscii(`${hours}:${minutes} ${AMPM}`)];
+    if (predictionMode){
+        dateTime = [toAscii(`${weekdayStr} ${month}-${day}-${year}`), toAscii(`${hours}:${minutes} ${AMPM} (F)`)];
+    }else{
+        dateTime = [toAscii(`${weekdayStr} ${month}-${day}-${year}`), toAscii(`${hours}:${minutes} ${AMPM}`)];
+    }
     dateTimeDisplay.textContent = dateTime.join("\n")
 }
 
 
-function updateBackground(now, sunriseSunset){
-    const hour = now.getHours();
-    const secs = now.getSeconds();
+function updateBackground(now, weather){
+    const sunrise = new Date(weather.daily.sunrise[0 + nextDay]);
+    const sunset = new Date(weather.daily.sunset[0 + nextDay]);
 
-    if (hour < sunriseSunset[0] || hour > sunriseSunset[1]){
+    if (now < sunrise || now > sunset){
         document.body.classList.add("night");
         document.body.classList.remove("day");
     }else{
@@ -88,4 +171,37 @@ function updateApartment(now){
     const TommyFrame = updateTommy();
     const apartmentFrame = `${apartmentTop}${TommyFrame}${apartmentBot}`
     apartmentDisplay.innerHTML = renderAscii(apartmentFrame);
+}
+
+
+function updateSunMoon(now, weather){
+    const sunMoon = document.getElementById("sunMoon");
+    if (document.body.classList.contains("day")) {
+        sunMoon.innerHTML = sun;
+    }else{
+        const phase = weather.daily.moon_phase[0 + nextDay]
+        let moon;
+
+        if (phase < 0.0625 || phase >= 0.9375) {
+            moon = moonFrames[4];
+        } else if (phase < 0.1875) {
+            moon = moonFrames[5];
+        } else if (phase < 0.3125) {
+            moon = moonFrames[6];
+        } else if (phase < 0.4375) {
+            moon = moonFrames[7];
+        } else if (phase < 0.5625) {
+            moon = moonFrames[0];
+        } else if (phase < 0.6875) {
+            moon = moonFrames[1];
+        } else if (phase < 0.8125) {
+            moon = moonFrames[2];
+        } else {
+            moon = moonFrames[3];
+        }
+
+        sunMoon.innerHTML = moon;
+    }
+
+    const clouds = weather.hourly.cloud_cover;
 }

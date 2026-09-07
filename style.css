@@ -28,7 +28,7 @@ html, body {
 
 #dateTimeDisplay {
     position: fixed;
-    top: 50px;
+    top: 12px;
     left: 24px;
 
     color: inherit;
@@ -62,7 +62,8 @@ body.night {
 
     color: inherit;
 
-    z-index: 1;
+    z-index: 10;
+    background-color: inherit;
 
     pointer-events: none;
     user-select: none;
@@ -70,6 +71,25 @@ body.night {
 
     font-family: monospace;
     font-size: 10px;
+}
+
+#sunMoon {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: inherit;
+
+    z-index: 1;
+
+    pointer-events: none;
+    user-select: none;
+    line-height: 1.1;
+
+    font-family: monospace;
+    font-size: 14px;
 }
 
 .tommy-brown {
