@@ -60,7 +60,127 @@ export const apartmentTotal = String.raw
 └─────────────────────┴────────────┴┴────────────┘─┘
 `
 
-export const apartmentTop = String.raw`├──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┤
+
+export const treeFrames = [String.raw
+`
+       [[green]]###&##                                       
+    ####&###&###                                    
+  ###&###&##&#&#                                    
+ ##&#&#&#&&##&#                                     
+ #&&######&###                    &%&%%%[[/green]]            
+  [[green]]### [[/green]]|  |[[green]]#&[[/green]]                    [[green]]%&%&%&%&%%[[/green]]          
+      |  |                     [[green]]%%%&%&%&%%%&[[/green]]         
+     /   |                      [[green]]&&%[[/green]]/  /[[green]]%%[[/green]]           
+     |  /                          | /              
+     |  |                           \\              
+┌──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+│  │ |│ |│  │  │  │  │  │  │  │  │  │\\│  │  │  │  │
+`, String.raw
+`
+        ###&##                                       
+     ####&###&###                                    
+   ###&###&##&#&#                                    
+  ##&#&#&#&&##&#                                     
+  #&&######&###                     &%&%%%            
+   ## |  |##&                     %&%&%&%&%%          
+      |  |                      %%%&%&%&%%%&         
+     /   |                       &&/  /%%%           
+     |  /                          | /              
+     |  |                           \\              
+┌──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+│  │ |│ |│  │  │  │  │  │  │  │  │  │\\│  │  │  │  │
+`, String.raw
+`       
+      ###&##                                       
+   ####&###&###                                    
+ ###&###&##&#&#                                    
+##&#&#&#&&##&#                                     
+#&&######&###                    &%&%%%            
+ #####|  |&                    %&%&%&%&%%          
+      |  |                    %%%&%&%&%%%&         
+     /   |                     &&%%/  /%           
+     |  /                          | /              
+     |  |                           \\              
+┌──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+│  │ |│ |│  │  │  │  │  │  │  │  │  │\\│  │  │  │  │
+`, String.raw
+`
+         ###&##                                       
+      ####&###&###                                    
+    ###&###&##&#&#                                    
+   ##&#&#&#&&##&#                                     
+   #&&######&###                     &%&%%%            
+    # |  |###&                     %&%&%&%&%%          
+      |  |                       %%%&%&%&%%%&         
+     /   |                        &/  /&%%%           
+     |  /                          | /              
+     |  |                           \\              
+┌──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+│  │ |│ |│  │  │  │  │  │  │  │  │  │\\│  │  │  │  │
+`, String.raw
+`       
+     ###&##                                       
+  ####&###&###                                    
+###&###&##&#&#                                    
+##&#&#&#&&##&#                                     
+#&&######&###                    &%&%%%            
+#####&|  |                    %&%&%&%&%%          
+      |  |                   %%%&%&%&%%%&         
+     /   |                    &&%%%/  /           
+     |  /                          | /              
+     |  |                           \\              
+┌──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+│  │ |│ |│  │  │  │  │  │  │  │  │  │\\│  │  │  │  │
+`]
+
+
+export function renderTree(tree) {
+    let html = "";
+    let green = false;
+
+    for (let i = 0; i < tree.length; i++) {
+
+        // Start green section
+        if (tree.startsWith("[[green]]", i)) {
+            green = true;
+            i += "[[green]]".length - 1;
+            continue;
+        }
+
+        // End green section
+        if (tree.startsWith("[[/green]]", i)) {
+            green = false;
+            i += "[[/green]]".length - 1;
+            continue;
+        }
+
+        const char = tree[i];
+
+        // Leave whitespace transparent
+        if (char === " " || char === "\n") {
+            html += char;
+            continue;
+        }
+
+        // Protect characters that HTML interprets specially
+        let escaped = char
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;");
+
+        if (green) {
+            html += `<span class="tree-char tree-green">${escaped}</span>`;
+        } else {
+            html += `<span class="tree-char">${escaped}</span>`;
+        }
+    }
+
+    return html;
+}
+
+
+export const apartmentTop = String.raw
+`├──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┤
 │                                                  │
 │                                                  │
 │                                                  │
@@ -281,7 +401,7 @@ export const sun = String.raw
 "*-._ /        \ _.-*"
      :          ; ____
 """"':          ;     
-_.-*" \        / "*-._
+_.-*" \        / " -._
     .' '-.__.-' '.    
   .'   /   .  \   '.  
       /    |   \      

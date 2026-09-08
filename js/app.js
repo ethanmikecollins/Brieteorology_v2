@@ -1,11 +1,13 @@
 import { toAscii } from "./ascii.js";
 import { apartmentTotal } from "./art.js";
 import { updateTommy } from "./art.js";
+import { treeFrames } from "./art.js";
 import { apartmentTop } from "./art.js";
 import { apartmentBot } from "./art.js";
 import { renderAscii } from "./art.js";
 import { moonFrames } from "./art.js";
 import { sun } from "./art.js";
+import { renderTree } from "./art.js";
 
 
 let weather;
@@ -20,9 +22,9 @@ async function loadWeather() {
 
     requestAnimationFrame(updateFrame);
     const now = new Date()
+    console.log("weather date:", weather.daily.time[0]);
+    console.log("computer date:", new Date());
     console.log(now.getDay())
-    console.log(weather.hourly.cloud_cover)
-    console.log(weather.daily.moon_phase)
 }
 
 loadWeather()
@@ -166,18 +168,21 @@ function updateBackground(now, weather){
 }
 
 
-function updateApartment(now){
+function updateApartment(now, weather){
     const apartmentDisplay = document.getElementById("apartmentDisplay");
+    const treeDisplay = document.getElementById("treeDisplay")
     const TommyFrame = updateTommy();
     const apartmentFrame = `${apartmentTop}${TommyFrame}${apartmentBot}`
     apartmentDisplay.innerHTML = renderAscii(apartmentFrame);
+    treeDisplay.innerHTML = renderTree(treeFrames[0]);
 }
 
-
+let sunMoonC = 0;
 function updateSunMoon(now, weather){
     const sunMoon = document.getElementById("sunMoon");
+    let planet;
     if (document.body.classList.contains("day")) {
-        sunMoon.innerHTML = sun;
+        planet = sun;
     }else{
         const phase = weather.daily.moon_phase[0 + nextDay]
         let moon;
@@ -200,8 +205,20 @@ function updateSunMoon(now, weather){
             moon = moonFrames[3];
         }
 
-        sunMoon.innerHTML = moon;
+        planet = moon;
     }
+
+    
+    if (sunMoonC <= 500){
+        sunMoon.innerHTML = planet;
+    }else{
+        const bobbing = [" ", planet]
+        sunMoon.innerHTML = bobbing.join("\n");
+        if (sunMoonC == 1000){
+            sunMoonC = 0;
+        }
+    }
+    sunMoonC += 1;
 
     const clouds = weather.hourly.cloud_cover;
 }

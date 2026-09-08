@@ -1,47 +1,61 @@
 import requests
 import json
+import time
 
-latitude = 40.69225
-longitude = -73.91458
 
-url = "https://api.open-meteo.com/v1/gfs"
+def update_weather():
+    latitude = 40.69225
+    longitude = -73.91458
 
-params = {
-    "latitude": latitude,
-    "longitude": longitude,
+    url = "https://api.open-meteo.com/v1/gfs"
 
-    "hourly": [
-        "temperature_2m",
-        "relative_humidity_2m",
-        "precipitation",
-        "snowfall",
-        "wind_speed_10m",
-        "cloud_cover"
-    ],
+    params = {
+        "latitude": latitude,
+        "longitude": longitude,
 
-    "daily": [
-        "temperature_2m_max",
-        "temperature_2m_min",
-        "precipitation_sum",
-        "snowfall_sum",
-        "sunrise",
-        "sunset",
-        "moon_phase"
-    ],
+        "hourly": [
+            "temperature_2m",
+            "relative_humidity_2m",
+            "precipitation",
+            "snowfall",
+            "wind_speed_10m",
+            "cloud_cover"
+        ],
 
-    "forecast_hours": 32,
-    "timezone": "America/New_York",
+        "daily": [
+            "temperature_2m_max",
+            "temperature_2m_min",
+            "precipitation_sum",
+            "snowfall_sum",
+            "sunrise",
+            "sunset",
+            "moon_phase"
+        ],
 
-    "temperature_unit": "fahrenheit",
-    "wind_speed_unit": "mph",
-    "precipitation_unit": "inch",
+        "forecast_hours": 32,
+        "timezone": "America/New_York",
 
-    "models": "ncep_hrrr_conus"
-}
+        "temperature_unit": "fahrenheit",
+        "wind_speed_unit": "mph",
+        "precipitation_unit": "inch",
 
-response = requests.get(url, params=params)
-response.raise_for_status()
+        "models": "ncep_hrrr_conus"
+    }
 
-weather = response.json()
-with open("weather.json", "w") as file:
-    json.dump(weather, file)
+    response = requests.get(url, params=params)
+    response.raise_for_status()
+
+    weather = response.json()
+    with open("weather.json", "w") as file:
+        json.dump(weather, file)
+
+
+def main():
+
+    while True:
+
+        update_weather()
+        time.sleep(6 * 60 * 60)
+
+
+main()
