@@ -8,6 +8,8 @@ import { renderAscii } from "./art.js";
 import { moonFrames } from "./art.js";
 import { sun } from "./art.js";
 import { renderTree } from "./art.js";
+import { thermometer } from "./art.js";
+import { cloudFrames } from "./art.js";
 
 
 let weather;
@@ -15,19 +17,25 @@ let predictionMode = false;
 let predictionNow = null;
 let timeFrame = 0;
 let nextDay = 0;
+let initHour;
+let hourIndex;
 
-async function loadWeather() {
-    const response = await fetch("weather.json");
-    weather = await response.json();
+async function startApp() {
+    await loadWeather();
 
     requestAnimationFrame(updateFrame);
-    const now = new Date()
-    console.log("weather date:", weather.daily.time[0]);
-    console.log("computer date:", new Date());
-    console.log(now.getDay())
+
+    setInterval(loadWeather, 5 * 60 * 1000);
 }
 
-loadWeather()
+startApp();
+
+async function loadWeather(){
+    const response = await fetch("weather.json", {cache: "no-store"});
+    weather = await response.json();
+
+    initHour = new Date(weather.hourly.time[0]);
+}
 
 function updateFrame(){
     let now;
@@ -36,15 +44,17 @@ function updateFrame(){
     }else{
         now = new Date();
     }
+
+    hourIndex = Math.floor((now - initHour)/(1000*60*60))
     
     updateTime(now);
     updateBackground(now, weather);
-    updateApartment(now);
+    updateApartment(weather);
     //updateApartment(now, windspeed, weather);
     //updateTrees(now, windspeed);
     //updateTommy(now)
     //updateWeather(now, weather, windspeed);
-    updateSunMoon(now, weather);
+    updateSunMoon(weather);
 
     requestAnimationFrame(updateFrame);
 }
@@ -70,8 +80,6 @@ function advancePrediction(){
     if (predictionNow.getHours() == 0){
         nextDay = 1;
     }
-    console.log(nextDay);
-    console.log(new Date(weather.daily.sunrise[0 + nextDay]));
 }
 
 function reversePrediction(){
@@ -79,8 +87,6 @@ function reversePrediction(){
     if (predictionNow.getHours() == 23){
         nextDay = 0;
     }
-    console.log(nextDay);
-    console.log(new Date(weather.daily.sunrise[0 + nextDay]));
 }
 
 
@@ -97,13 +103,11 @@ document.addEventListener("keydown", (event) => {
     if (predictionMode && event.key === "ArrowRight" && timeFrame < 24) {
         advancePrediction();
         timeFrame += 1;
-        console.log(timeFrame)
     }
 
     if (predictionMode && event.key === "ArrowLeft" && timeFrame > 0) {
         reversePrediction();
         timeFrame -= 1;
-        console.log(timeFrame)
     }
 });
 
@@ -130,6 +134,31 @@ function updateTime(now){
         weekdayStr = "SAT"
     }
 
+    let monthStr = "JAN"
+    if (month == 2){
+        monthStr = "FEB"
+    }else if (month == 3){
+        monthStr = "MAR"
+    }else if (month == 4){
+        monthStr = "APR"
+    }else if (month == 5){
+        monthStr = "MAY"
+    }else if (month == 6){
+        monthStr = "JUN"
+    }else if (month == 7){
+        monthStr = "JUL"
+    }else if (month == 8){
+        monthStr = "AUG"
+    }else if (month == 9){
+        monthStr = "SEP"
+    }else if (month == 10){
+        monthStr = "OCT"
+    }else if (month == 11){
+        monthStr = "NOV"
+    }else if (month == 12){
+        monthStr = "DEC"
+    }
+
 
     let hours = now.getHours();
     let AMPM = "AM"
@@ -146,13 +175,12 @@ function updateTime(now){
     let dateTime;
 
     if (predictionMode){
-        dateTime = [toAscii(`${weekdayStr} ${month}-${day}-${year}`), toAscii(`${hours}:${minutes} ${AMPM} (F)`)];
+        dateTime = [toAscii(`${weekdayStr} ${monthStr} ${day}`), toAscii(`${hours}:${minutes} ${AMPM} (F)`)];
     }else{
-        dateTime = [toAscii(`${weekdayStr} ${month}-${day}-${year}`), toAscii(`${hours}:${minutes} ${AMPM}`)];
+        dateTime = [toAscii(`${weekdayStr} ${monthStr} ${day}`), toAscii(`${hours}:${minutes} ${AMPM}`)];
     }
     dateTimeDisplay.textContent = dateTime.join("\n")
 }
-
 
 function updateBackground(now, weather){
     const sunrise = new Date(weather.daily.sunrise[0 + nextDay]);
@@ -167,18 +195,43 @@ function updateBackground(now, weather){
     }
 }
 
-
-function updateApartment(now, weather){
+let treeFrameCounter = 0;
+function updateApartment(weather){
     const apartmentDisplay = document.getElementById("apartmentDisplay");
     const treeDisplay = document.getElementById("treeDisplay")
     const TommyFrame = updateTommy();
     const apartmentFrame = `${apartmentTop}${TommyFrame}${apartmentBot}`
     apartmentDisplay.innerHTML = renderAscii(apartmentFrame);
-    treeDisplay.innerHTML = renderTree(treeFrames[0]);
+
+    let treeIndices;
+    if (weather.hourly.wind_speed_10m[hourIndex] <= 3){
+        treeDisplay.innerHTML = renderTree(treeFrames[0]);
+    }else{
+        if (weather.hourly.wind_speed_10m[hourIndex] <= 10){
+            treeIndices = [0, 1, 0, 2];
+        }else if (weather.hourly.wind_speed_10m[hourIndex] <= 15){
+            treeIndices = [0, 1, 3, 1, 0, 2, 4, 2];
+        }else{
+            treeIndices = [0, 1, 3, 5, 3, 1, 0, 2, 4, 6, 4, 2];
+        }
+
+        let frameProgress;
+        if (treeIndices.length == 4){
+            frameProgress = Math.floor(treeFrameCounter/200) % treeIndices.length;
+        }else if (treeIndices.length == 8){
+            frameProgress = Math.floor(treeFrameCounter/100) % treeIndices.length;
+        }else{
+            frameProgress = Math.floor(treeFrameCounter/30) % treeIndices.length;
+        }
+
+        treeDisplay.innerHTML = renderTree(treeFrames[treeIndices[frameProgress]]);
+    }
+    
+    treeFrameCounter += 1;
 }
 
 let sunMoonC = 0;
-function updateSunMoon(now, weather){
+function updateSunMoon(weather){
     const sunMoon = document.getElementById("sunMoon");
     let planet;
     if (document.body.classList.contains("day")) {
@@ -220,5 +273,23 @@ function updateSunMoon(now, weather){
     }
     sunMoonC += 1;
 
-    const clouds = weather.hourly.cloud_cover;
+    const clouds = document.getElementById("clouds");
+    const cloudCover = weather.hourly.cloud_cover[hourIndex];
+
+    if (cloudCover <= 25){
+        clouds.innerHTML = " ";
+    }else if (cloudCover <= 50){
+        clouds.innerHTML = cloudFrames[0];
+    }else if (cloudCover <= 75){
+        clouds.innerHTML = cloudFrames[1];
+    }else{
+        clouds.innerHTML = cloudFrames[2];
+    }
 }
+
+function updateStats(now, weather){
+    //const tempDisplay = document.getElementById("tempDisplay");
+    //tempDisplay.innerHTML = toAscii()
+}
+
+tempIconDisplay.innerHTML = thermometer

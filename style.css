@@ -57,7 +57,7 @@ body.night {
 #apartmentScene {
     position: fixed;
     left: 50%;
-    top: 60%;
+    top: 65%;
     transform: translate(-50%, -50%);
 
     z-index: 20;
@@ -83,7 +83,7 @@ body.night {
     background: transparent;
 }
 
-.tree-green {
+.tree-leaf {
     color: green;
 }
 
@@ -110,7 +110,7 @@ body.night #apartmentDisplay {
 
 #sunMoon {
     position: fixed;
-    top: 24px;
+    top: 50px;
     left: 50%;
     transform: translateX(-50%);
 
@@ -125,10 +125,81 @@ body.night #apartmentDisplay {
     line-height: 1.1;
 }
 
+#clouds {
+    position: fixed;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 15;
+
+    color: inherit;
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.1;
+}
+
+#tempIconDisplay {
+    position: fixed;
+    top: 40%;
+    left: 0%;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 12px;
+}
+
+#tempDisplay {
+    position: fixed;
+    top: 40%;
+    left: 15%;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 24px;
+}
+
+#tempHiLowDisplay {
+    position: fixed;
+    top: 40%;
+    left: 0%;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 12px;
+}
+
 .tommy-brown {
     color: rgb(102, 79, 35);
 }
 
 .tommy-green {
-    color: rgb(51, 97, 21);
+    color: rgb(146, 235, 87);
 }
