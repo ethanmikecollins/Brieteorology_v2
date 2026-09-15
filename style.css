@@ -142,10 +142,27 @@ body.night #apartmentDisplay {
     line-height: 1.1;
 }
 
+#rainfall {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    z-index: 1000;
+
+    color: inherit;
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.1;
+}
+
 #tempIconDisplay {
     position: fixed;
     top: 40%;
-    left: 0%;
+    left: 24px;
 
     transform: translateY(-50%);
 
@@ -163,7 +180,7 @@ body.night #apartmentDisplay {
 #tempDisplay {
     position: fixed;
     top: 40%;
-    left: 15%;
+    left: 112px;
 
     transform: translateY(-50%);
 
@@ -178,10 +195,10 @@ body.night #apartmentDisplay {
     font-size: 24px;
 }
 
-#tempHiLowDisplay {
+#tempMinMaxDisplay {
     position: fixed;
-    top: 40%;
-    left: 0%;
+    top: 41%;
+    left: 340px;
 
     transform: translateY(-50%);
 
@@ -196,10 +213,218 @@ body.night #apartmentDisplay {
     font-size: 12px;
 }
 
+#humidIconDisplay {
+    position: fixed;
+    top: 60%;
+    left: 24px;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 12px;
+}
+
+#humidDisplay {
+    position: fixed;
+    top: 60%;
+    left: 112px;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 24px;
+}
+
+#windIconDisplay {
+    position: fixed;
+    top: 80%;
+    left: 24px;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 12px;
+}
+
+#windDisplay {
+    position: fixed;
+    top: 80%;
+    left: 112px;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 24px;
+}
+
+#cloudIconDisplay {
+    position: fixed;
+    top: 40%;
+    right: 25%;
+
+    transform: translate(-50%, -50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 12px;
+}
+
+#cloudDisplay {
+    position: fixed;
+    top: 40%;
+    left: 1100px;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 24px;
+}
+
+#rainIconDisplay {
+    position: fixed;
+    top: 60%;
+    right: 25%;
+
+    transform: translate(-50%, -50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 12px;
+}
+
+#rainDisplay {
+    position: fixed;
+    top: 60%;
+    left: 1100px;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 24px;
+}
+
+#snowIconDisplay {
+    position: fixed;
+    top: 80%;
+    right: 25%;
+
+    transform: translate(-50%, -50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 12px;
+}
+
+#snowDisplay {
+    position: fixed;
+    top: 80%;
+    left: 1100px;
+
+    transform: translateY(-50%);
+
+    color: inherit;
+
+    z-index: 1000;
+
+    pointer-events: none;
+    user-select: none;
+
+    font-family: monospace;
+    font-size: 24px;
+}
+
 .tommy-brown {
     color: rgb(102, 79, 35);
 }
 
 .tommy-green {
     color: rgb(146, 235, 87);
+}
+
+.therm-red {
+    color: rgb(201, 31, 4);
+}
+
+.humidity-blue {
+    color: rgb(29, 156, 211);
+}
+
+.rain-char {
+    color: rgb(29, 156, 211, 0.5);
+}
+
+body.day .snow-char {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+body.night .snow-char {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.sun-yellow {
+    color: rgb(239, 208, 4);
+}
+
+.cloud-gray {
+    color: gray;
 }

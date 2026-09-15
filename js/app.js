@@ -10,15 +10,33 @@ import { sun } from "./art.js";
 import { renderTree } from "./art.js";
 import { thermometer } from "./art.js";
 import { cloudFrames } from "./art.js";
+import { drop } from "./art.js";
+import { wind } from "./art.js";
+import { cloud } from "./art.js";
+import { rain } from "./art.js";
+import { snow } from "./art.js";
+import { rainFrames } from "./art.js";
+import { snowFrames } from "./art.js";
+import { renderPrecip } from "./art.js";
 
 
 let weather;
 let predictionMode = false;
 let predictionNow = null;
 let timeFrame = 0;
-let nextDay = 0;
+let dayIndex = 0;
 let initHour;
 let hourIndex;
+
+tempIconDisplay.innerHTML = renderAscii(thermometer)
+humidIconDisplay.innerHTML = renderAscii(drop)
+windIconDisplay.innerHTML = wind
+cloudIconDisplay.innerHTML = renderAscii(cloud)
+rainIconDisplay.innerHTML = renderAscii(rain)
+snowIconDisplay.innerHTML = renderAscii(snow)
+
+
+
 
 async function startApp() {
     await loadWeather();
@@ -50,11 +68,9 @@ function updateFrame(){
     updateTime(now);
     updateBackground(now, weather);
     updateApartment(weather);
-    //updateApartment(now, windspeed, weather);
-    //updateTrees(now, windspeed);
-    //updateTommy(now)
-    //updateWeather(now, weather, windspeed);
     updateSunMoon(weather);
+    updatePrecip(weather);
+    updateStats(weather);
 
     requestAnimationFrame(updateFrame);
 }
@@ -72,20 +88,20 @@ function stopPredictionMode(){
     predictionMode = false;
     predictionNow = null;
     timeFrame = 0;
-    nextDay = 0;
+    dayIndex = 0;
 }
 
 function advancePrediction(){
     predictionNow.setHours(predictionNow.getHours() + 1);
     if (predictionNow.getHours() == 0){
-        nextDay = 1;
+        dayIndex = 1;
     }
 }
 
 function reversePrediction(){
     predictionNow.setHours(predictionNow.getHours() - 1);
     if (predictionNow.getHours() == 23){
-        nextDay = 0;
+        dayIndex = 0;
     }
 }
 
@@ -183,8 +199,8 @@ function updateTime(now){
 }
 
 function updateBackground(now, weather){
-    const sunrise = new Date(weather.daily.sunrise[0 + nextDay]);
-    const sunset = new Date(weather.daily.sunset[0 + nextDay]);
+    const sunrise = new Date(weather.daily.sunrise[dayIndex]);
+    const sunset = new Date(weather.daily.sunset[dayIndex]);
 
     if (now < sunrise || now > sunset){
         document.body.classList.add("night");
@@ -237,7 +253,7 @@ function updateSunMoon(weather){
     if (document.body.classList.contains("day")) {
         planet = sun;
     }else{
-        const phase = weather.daily.moon_phase[0 + nextDay]
+        const phase = weather.daily.moon_phase[dayIndex]
         let moon;
 
         if (phase < 0.0625 || phase >= 0.9375) {
@@ -287,9 +303,94 @@ function updateSunMoon(weather){
     }
 }
 
-function updateStats(now, weather){
-    //const tempDisplay = document.getElementById("tempDisplay");
-    //tempDisplay.innerHTML = toAscii()
+let precipC = 0;
+function updatePrecip(weather){
+    const rainfall = document.getElementById("rainfall");
+
+    let chosenFrame;
+    const frameLength = rainFrames[0].length;
+    let fallTime = 10;
+    let precipSway = true;
+    if (weather.hourly.precipitation[hourIndex] == 0 && weather.hourly.snowfall[hourIndex] == 0){
+        chosenFrame = " ";
+    }else if (weather.hourly.snowfall[hourIndex] > 0){
+        fallTime = 500;
+        precipSway = true;
+        if (weather.hourly.snowfall[hourIndex] <= 0.5){
+            chosenFrame = snowFrames[2];
+        }else if (weather.hourly.snowfall[hourIndex] <= 1.0){
+            chosenFrame = snowFrames[2];
+        }else{
+            chosenFrame = snowFrames[2];
+        }
+    }else if (weather.hourly.precipitation[hourIndex] <= 0.05){
+        chosenFrame = rainFrames[2];
+    }else if (weather.hourly.precipitation[hourIndex] <= 0.15){
+        chosenFrame = rainFrames[1];
+    }else{
+        chosenFrame = rainFrames[0];
+    }
+
+    chosenFrame = snowFrames[0];
+    fallTime = 100;
+    
+    let precipStr = "";
+    let rowIndex = Math.floor(precipC/fallTime);
+
+    if (rowIndex >= frameLength){
+        rowIndex = 0;
+        precipC = 0;
+    }
+
+    if (chosenFrame != " "){
+        const shiftedRows = [
+            ...chosenFrame.slice(frameLength - rowIndex),
+            ...chosenFrame.slice(0, frameLength - rowIndex)
+        ];
+
+        const swayOffsets = [-4, -2, 0, 2, 4, 2, 0, -2];
+        const centerPadding = 4;
+
+        for (let i = 0; i < shiftedRows.length; i++) {
+            if (precipSway) {
+                const offset = swayOffsets[i % swayOffsets.length];
+
+                const leftSpaces = centerPadding + offset;
+                const rightSpaces = centerPadding - offset;
+
+                precipStr +=
+                    " ".repeat(leftSpaces) +
+                    renderPrecip(shiftedRows[i]) +
+                    " ".repeat(rightSpaces) + "\n";
+            } else {
+                precipStr += renderPrecip(shiftedRows[i]) + "\n";
+            }
+        }
+    }
+
+    rainfall.innerHTML = precipStr;
+
+    precipC += 1;
 }
 
-tempIconDisplay.innerHTML = thermometer
+function updateStats(weather){
+    const tempDisplay = document.getElementById("tempDisplay");
+    tempDisplay.innerHTML = toAscii(`${weather.hourly.temperature_2m[hourIndex]}oF`);
+    const tempMinMaxDisplay = document.getElementById("tempMinMaxDisplay")
+    tempMinMaxDisplay.innerHTML = toAscii(`${weather.daily.temperature_2m_max[dayIndex]}oF`) + "\n" + toAscii(`${weather.daily.temperature_2m_min[dayIndex]}oF`);
+
+    const humidDisplay = document.getElementById("humidDisplay");
+    humidDisplay.innerHTML = toAscii(`${weather.hourly.relative_humidity_2m[hourIndex]}%`);
+
+    const windDisplay = document.getElementById("windDisplay");
+    windDisplay.innerHTML = toAscii(`${weather.hourly.wind_speed_10m[hourIndex]} MPH`);
+
+    const cloudDisplay = document.getElementById("cloudDisplay");
+    cloudDisplay.innerHTML = toAscii(`${weather.hourly.cloud_cover[hourIndex]}%`);
+
+    const rainDisplay = document.getElementById("rainDisplay");
+    rainDisplay.innerHTML = toAscii(`${weather.daily.precipitation_sum[dayIndex]} IN`);
+
+    const snowDisplay = document.getElementById("snowDisplay");
+    snowDisplay.innerHTML = toAscii(`${weather.daily.snowfall_sum[dayIndex]} IN`);
+}

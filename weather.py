@@ -33,13 +33,12 @@ def update_weather():
         ],
 
         "forecast_hours": 32,
+        "forecast_days": 2,
         "timezone": "America/New_York",
 
         "temperature_unit": "fahrenheit",
         "wind_speed_unit": "mph",
-        "precipitation_unit": "inch",
-
-        "models": "ncep_hrrr_conus"
+        "precipitation_unit": "inch"
     }
 
     response = requests.get(url, params=params)
